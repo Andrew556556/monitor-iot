@@ -1,15 +1,17 @@
 const tableBody = document.getElementById('device-table-body');
+let isFetching = false;
+let lastDataJson = ''; // Para evitar render si no hay cambios
 
 function fetchData() {
+    if (isFetching) return; // Prevenir múltiples llamadas simultáneas
+    isFetching = true;
+
     fetch('http://13.219.250.163:5000/api/devices')
         .then(response => {
             if (!response.ok) throw new Error('Error al obtener los datos');
             return response.json();
         })
         .then(data => {
-            tableBody.innerHTML = ''; // Limpiar tabla
-
-            // Verificar si data contiene un arreglo directamente o dentro de una propiedad
             const devices = Array.isArray(data) ? data : data.devices;
 
             if (!devices || devices.length === 0) {
@@ -17,6 +19,13 @@ function fetchData() {
                 return;
             }
 
+            // Verifica si los datos cambiaron para evitar render innecesario
+            const currentDataJson = JSON.stringify(devices);
+            if (currentDataJson === lastDataJson) return;
+            lastDataJson = currentDataJson;
+
+            // Renderizar nueva tabla
+            tableBody.innerHTML = ''; // Limpiar tabla
             devices.forEach(device => {
                 const row = `
                     <tr>
@@ -33,6 +42,9 @@ function fetchData() {
         .catch(error => {
             console.error('Error al cargar los datos:', error);
             tableBody.innerHTML = '<tr><td colspan="5">Error al cargar datos</td></tr>';
+        })
+        .finally(() => {
+            isFetching = false;
         });
 }
 
