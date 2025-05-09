@@ -1,7 +1,7 @@
 const tableBody = document.getElementById('device-table-body');
 
 function fetchData() {
-    fetch('http://18.209.240.46:5000/api/devices')
+    fetch('http://3.234.255.100:5000/api/devices')
         .then(response => {
             if (!response.ok) throw new Error('Error al obtener los datos');
             return response.json();
