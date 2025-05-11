@@ -6,7 +6,7 @@ function fetchData() {
     if (isFetching) return; // Prevenir múltiples llamadas simultáneas
     isFetching = true;
 
-    fetch('http://13.219.250.163:5000/api/devices')
+    fetch('http://3.227.245.42:5000/api/devices')
         .then(response => {
             if (!response.ok) throw new Error('Error al obtener los datos');
             return response.json();
